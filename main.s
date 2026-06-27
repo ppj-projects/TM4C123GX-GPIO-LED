@@ -24,7 +24,11 @@ GPIODR8R	EQU 0x508
 GPIOPUR		EQU	0x510
 GPIOODR		EQU 0x50C
 GPIODEN		EQU	0x51C
-GPIODATAPB5	EQU	0x3FC;0X080
+GPIODATA	EQU 0x00
+GPIODATAPB	EQU	0x3FC; 0x3FC is all bits in data register
+GPIODATAPB5	EQU 0x80 ; 0010 0000 dd (d = don't care)
+					 ;   ^-- pin5 (PB5)
+
 	
 	
 	;Note that GPIO can only be accessed through the AHB aperture
@@ -77,10 +81,13 @@ GPIODATAPB5	EQU	0x3FC;0X080
 	;power pin PB5 to light up external LED
 	;Write "high" to data register. GPIODATA
 	LDR r0, =AHB_PORTB
-	LDR r1,[r0,#GPIODATAPB5]
-	MOV r1, #0xF0
+	MOV r1, #(1<<5) ; pin5
 	STR r1,[r0,#GPIODATAPB5]
-	LDR r1,[r0,#GPIODATAPB5]
+	;LDR r1,[r0,#GPIODATAPB]
+	;MOV r1, #0xF0
+	;STR r1,[r0,#GPIODATAPB]
+	;LDR r1,[r0,#GPIODATAPB]
+	
 	
 ; Infinite loop. Equivalent to while();. Prevents program from stopping immediately
 stop B stop	
